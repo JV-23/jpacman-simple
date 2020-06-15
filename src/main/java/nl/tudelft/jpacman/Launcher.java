@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.tudelft.jpacman.board.BoardFactory;
-import nl.tudelft.jpacman.game.Player;
+import nl.tudelft.jpacman.level.Player;
 import nl.tudelft.jpacman.game.SinglePlayerGame;
 import nl.tudelft.jpacman.level.Level;
 import nl.tudelft.jpacman.level.LevelFactory;
