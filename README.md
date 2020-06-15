@@ -1,4 +1,4 @@
-jpacman-framework
+jpacman-simple
 =================
 
-Note: for educational purposes, the private methods and fields within this project are documented.
+Stripped down version of jpacman-framework, for testing purposes. Original: https://github.com/SERG-Delft/jpacman-framework
