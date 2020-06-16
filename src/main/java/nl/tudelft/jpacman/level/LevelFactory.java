@@ -2,15 +2,15 @@ package nl.tudelft.jpacman.level;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
-import com.google.common.collect.Lists;
+import java.util.Optional;
 
 import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
-import nl.tudelft.jpacman.npc.GhostColor;
+import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.npc.NPC;
+import nl.tudelft.jpacman.npc.ghost.GhostColor;
+import nl.tudelft.jpacman.npc.ghost.GhostFactory;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.sprite.Sprite;
 
@@ -20,6 +20,12 @@ import nl.tudelft.jpacman.sprite.Sprite;
  * @author Jeroen Roosen <j.roosen@student.tudelft.nl>
  */
 public class LevelFactory {
+	
+	private static final int GHOSTS = 4;
+    private static final int BLINKY = 0;
+    private static final int INKY = 1;
+    private static final int PINKY = 2;
+    private static final int CLYDE = 3;
 
 	/**
 	 * The default value of a pellet.
@@ -31,13 +37,25 @@ public class LevelFactory {
 	 */
 	private PacManSprites sprites;
 	
+	 /**
+     * Used to cycle through the various ghost types.
+     */
+    private int ghostIndex;
+
+    /**
+     * The factory providing ghosts.
+     */
+    private final GhostFactory ghostFact;
+	
 	/**
 	 * Creates a new level factory.
 	 * @param spriteStore The sprite store providing the sprites for units.
 	 */
-	public LevelFactory(PacManSprites spriteStore) {
-		this.sprites = spriteStore;
-	}
+    public LevelFactory(PacManSprites spriteStore, GhostFactory ghostFactory) {
+        this.sprites = spriteStore;
+        this.ghostIndex = -1;
+        this.ghostFact = ghostFactory;
+    }
 	
 	/**
 	 * Creates a new level from the provided data.
@@ -46,7 +64,7 @@ public class LevelFactory {
 	 * @param startPositions A list of squares from which players may start the game.
 	 * @return A new level for the board.
 	 */
-	public Level createLevel(Board board, List<NPC> ghosts,
+	public Level createLevel(Board board, List<Ghost> ghosts,
 			List<Square> startPositions) {
 		return new Level(board, ghosts, startPositions);
 	}
@@ -55,8 +73,21 @@ public class LevelFactory {
 	 * Creates a new ghost.
 	 * @return The new ghost.
 	 */
-	public NPC createGhost() {
-		return new RandomGhost(sprites.getGhostSprite(GhostColor.RED));
+	Ghost createGhost() {
+		ghostIndex++;
+        ghostIndex %= GHOSTS;
+        switch (ghostIndex) {
+            case BLINKY:
+                return ghostFact.createBlinky();
+            case INKY:
+                return ghostFact.createInky();
+            case PINKY:
+                return ghostFact.createPinky();
+            case CLYDE:
+                return ghostFact.createClyde();
+            default:
+                return new RandomGhost(sprites.getGhostSprite(GhostColor.RED));
+        }
 	}
 	
 	/**
@@ -68,52 +99,30 @@ public class LevelFactory {
 	}
 	
 	/**
-	 * Implementation of an NPC that wanders around randomly.
-	 * 
-	 * @author Jeroen Roosen <j.roosen@student.tudelft.nl>
-	 */
-	private class RandomGhost extends NPC {
+     * Implementation of an NPC that wanders around randomly.
+     *
+     * @author Jeroen Roosen
+     */
+    private static final class RandomGhost extends Ghost {
 
-		/**
-		 * The suggested delay between moves.
-		 */
-		private static final long DELAY = 200L;
-		
-		/**
-		 * The sprite of this unit.
-		 */
-		private final Map<Direction, Sprite> sprite;
-		
-		/**
-		 * Creates a new random ghost.
-		 * @param ghostSprite The sprite for the ghost.
-		 */
-		private RandomGhost(Map<Direction, Sprite> ghostSprite) {
-			this.sprite = ghostSprite;
-		}
-		
-		@Override
-		public long getInterval() {
-			return (long) (DELAY * .75 + new Random().nextInt((int) DELAY / 2));
-		}
+        /**
+         * The suggested delay between moves.
+         */
+        private static final long DELAY = 175L;
 
-		@Override
-		public Direction nextMove() {
-			Square square = getSquare();
-			Random r = new Random();
-			List<Direction> dirs = Lists.newArrayList(Direction.values());
-			while (!dirs.isEmpty()) {
-				Direction d = dirs.get(r.nextInt(dirs.size()));
-				if (square.getSquareAt(d).isAccessibleTo(this)) {
-					return d;
-				}
-			}
-			return null;
-		}
+        /**
+         * Creates a new random ghost.
+         *
+         * @param ghostSprite
+         *            The sprite for the ghost.
+         */
+        RandomGhost(Map<Direction, Sprite> ghostSprite) {
+            super(ghostSprite, (int) DELAY, 0);
+        }
 
-		@Override
-		public Sprite getSprite() {
-			return sprite.get(getDirection());
-		}
-	}
+        @Override
+        public Optional<Direction> nextAiMove() {
+            return Optional.empty();
+        }
+    }
 }

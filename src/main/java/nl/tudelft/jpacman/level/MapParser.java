@@ -10,6 +10,7 @@ import java.util.List;
 import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.board.BoardFactory;
 import nl.tudelft.jpacman.board.Square;
+import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.npc.NPC;
 
 /**
@@ -69,7 +70,7 @@ public class MapParser {
 		Square[][] grid = new Square[width][height];
 
 		// parse map
-		List<NPC> ghosts = new ArrayList<>();
+		List<Ghost> ghosts = new ArrayList<>();
 		List<Square> startPositions = new ArrayList<>();
 
 		for (int x = 0; x < width; x++) {
@@ -90,7 +91,7 @@ public class MapParser {
 				case 'G':
 					Square ghostSquare = boardCreator.createGround();
 					grid[x][y] = ghostSquare;
-					NPC ghost = levelCreator.createGhost();
+					Ghost ghost = levelCreator.createGhost();
 					ghosts.add(ghost);
 					ghost.occupy(ghostSquare);
 					break;

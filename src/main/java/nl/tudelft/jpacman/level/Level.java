@@ -14,6 +14,7 @@ import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.game.Player;
+import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.npc.NPC;
 
 /**
@@ -48,7 +49,7 @@ public class Level {
 	/**
 	 * The NPCs of this level and, if they are running, their schedules.
 	 */
-	private final Map<NPC, ScheduledFuture<?>> npcs;
+	private final Map<Ghost, ScheduledFuture<?>> npcs;
 
 	/**
 	 * <code>true</code> iff this level is currently in progress, i.e. players
@@ -86,7 +87,7 @@ public class Level {
 	 * @param startPositions
 	 *            The squares on which players start on this board.
 	 */
-	public Level(Board b, List<NPC> ghosts, List<Square> startPositions) {
+	public Level(Board b, List<Ghost> ghosts, List<Square> startPositions) {
 		assert b != null;
 		assert ghosts != null;
 		assert startPositions != null && !startPositions.isEmpty();
@@ -95,7 +96,7 @@ public class Level {
 		this.board = b;
 		this.inProgress = false;
 		this.npcs = new HashMap<>();
-		for (NPC g : ghosts) {
+		for (Ghost g : ghosts) {
 			npcs.put(g, null);
 		}
 		this.startSquares = startPositions;
@@ -199,7 +200,7 @@ public class Level {
 	 * Starts all NPC movement scheduling.
 	 */
 	private void startNPCs() {
-		for (final NPC npc : npcs.keySet()) {
+		for (final Ghost npc : npcs.keySet()) {
 			long interval = npc.getInterval();
 			ScheduledFuture<?> schedule = service.scheduleAtFixedRate(
 					new Runnable() {
