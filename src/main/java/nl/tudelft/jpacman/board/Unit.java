@@ -52,6 +52,15 @@ public abstract class Unit {
 		assert invariant();
 		return square;
 	}
+	
+	/**
+     * Returns whether this unit is currently on  a square.
+     *
+     * @return True iff the unit is occupying a square at the moment.
+     */
+    public boolean hasSquare() {
+        return square != null;
+    }
 
 	/**
 	 * Occupies the target square iff this unit is allowed to as decided by
@@ -90,5 +99,22 @@ public abstract class Unit {
 	 * @return The sprite of this unit.
 	 */
 	public abstract Sprite getSprite();
+	
+	/**
+     * A utility method for implementing the ghost AI.
+     *
+     * @param amountToLookAhead the amount of squares to follow this units direction in.
+     * @return The square amountToLookAhead spaces in front of this unit.
+     */
+    public Square squaresAheadOf(int amountToLookAhead) {
+        Direction targetDirection = this.getDirection();
+        Square destination = this.getSquare();
+        for (int i = 0; i < amountToLookAhead; i++) {
+            destination = destination.getSquareAt(targetDirection);
+        }
+
+        return destination;
+    }
+
 
 }

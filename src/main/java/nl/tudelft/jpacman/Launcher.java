@@ -12,6 +12,7 @@ import nl.tudelft.jpacman.game.SinglePlayerGame;
 import nl.tudelft.jpacman.level.Level;
 import nl.tudelft.jpacman.level.LevelFactory;
 import nl.tudelft.jpacman.level.MapParser;
+import nl.tudelft.jpacman.npc.ghost.GhostFactory;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.sprite.Sprite;
 import nl.tudelft.jpacman.ui.Action;
@@ -27,8 +28,9 @@ public class Launcher {
 	public static void main(String[] args) throws IOException {
 
 		PacManSprites sprites = new PacManSprites();
+		GhostFactory ghostFactory = new GhostFactory(sprites);
 		
-		LevelFactory lf = new LevelFactory(sprites);
+		LevelFactory lf = new LevelFactory(sprites, ghostFactory);
 		BoardFactory bf = new BoardFactory(sprites);
 		
 		MapParser parser = new MapParser(lf, bf);

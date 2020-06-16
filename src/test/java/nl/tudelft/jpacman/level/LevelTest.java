@@ -6,15 +6,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import nl.tudelft.jpacman.board.Board;
-import nl.tudelft.jpacman.board.Square;
-import nl.tudelft.jpacman.game.Player;
-import nl.tudelft.jpacman.npc.NPC;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
+
+import nl.tudelft.jpacman.board.Board;
+import nl.tudelft.jpacman.board.Square;
+import nl.tudelft.jpacman.game.Player;
+import nl.tudelft.jpacman.npc.Ghost;
 
 /**
  * Tests various aspects of level.
@@ -31,7 +32,7 @@ public class LevelTest {
 	/**
 	 * An NPC on this level.
 	 */
-	private final NPC ghost = mock(NPC.class);
+	private final Ghost ghost = mock(Ghost.class);
 
 	/**
 	 * Starting position 1.
