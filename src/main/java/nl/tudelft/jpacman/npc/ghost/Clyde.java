@@ -1,9 +1,14 @@
 package nl.tudelft.jpacman.npc.ghost;
 
+import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import nl.tudelft.jpacman.board.Direction;
+import nl.tudelft.jpacman.board.Square;
+import nl.tudelft.jpacman.board.Unit;
+import nl.tudelft.jpacman.game.Player;
 import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.sprite.Sprite;
 
@@ -36,7 +41,10 @@ import nl.tudelft.jpacman.sprite.Sprite;
  */
 public class Clyde extends Ghost {
 
-
+	 /**
+     * The amount of cells Clyde wants to stay away from Pac Man.
+     */
+    private static final int SHYNESS = 8;
 
     /**
      * The variation in intervals, this makes the ghosts look more dynamic and
@@ -48,6 +56,11 @@ public class Clyde extends Ghost {
      * The base movement interval.
      */
     private static final int MOVE_INTERVAL = 250;
+    
+    /**
+     * A map of opposite directions.
+     */
+    private static final Map<Direction, Direction> OPPOSITES = new EnumMap<>(Direction.class);
 
 
     /**
@@ -74,6 +87,24 @@ public class Clyde extends Ghost {
     @Override
     public Optional<Direction> nextAiMove() {
        
+    	assert hasSquare();
+
+        Unit nearest = Navigation.findNearest(Player.class, getSquare());
+        if (nearest == null) {
+            return Optional.empty();
+        }
+        assert nearest.hasSquare();
+        Square target = nearest.getSquare();
+
+        List<Direction> path = Navigation.shortestPath(getSquare(), target, this);
+        if (path != null && !path.isEmpty()) {
+            Direction direction = path.get(0);
+            if (path.size() <= SHYNESS) {
+                return Optional.ofNullable(OPPOSITES.get(direction));
+            }
+            return Optional.of(direction);
+        }
+    	
         return Optional.empty();
     }
 }
